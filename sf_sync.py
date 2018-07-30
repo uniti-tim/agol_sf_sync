@@ -23,8 +23,8 @@ cur = conn.cursor()
 gis = GIS(os.environ.get("AGOL_SERVICE_URL"),os.environ.get("AGOL_USER"), os.environ.get("AGOL_PASS"))
 
 # Get and Push into Truncated Tables - totally replaces all data in both locations and cpe_locations table
-# load_locations(sf,conn,cur)
-# load_cpe_locations(sf,conn,cur)
+load_locations(sf,conn,cur)
+load_cpe_locations(sf,conn,cur)
 # should a function be here that cleansup the NULL Lat/lngs after loading?
 
 create_datafile(conn,cur)
