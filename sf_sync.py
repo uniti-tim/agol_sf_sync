@@ -30,7 +30,7 @@ load_cpe_locations(sf,conn,cur)
 create_datafile(conn,cur)
 
 
-data_name = 'Simple'
+data_name = 'Uniti_Salesforce_Locations'
 locations_csv = gis.content.search(data_name,'CSV')
 
 if len(locations_csv) > 0:
