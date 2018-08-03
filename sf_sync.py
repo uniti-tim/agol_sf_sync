@@ -32,15 +32,23 @@ create_datafile(conn,cur)
 
 data_name = 'Uniti_Salesforce_Locations'
 locations_csv = gis.content.search(data_name,'CSV')
+description = "Locations with or without CPEs. Exported from Salesforce. If the Location does not have a CPE, \
+    the Location will still be included and the CPE fields will be blank. \
+    If there are multiple CPEs at a location, that location will appear for each CPE. \
+    Excludes 'Virtual' LOCs and CPEs. \
+    This Service was updated on %s by an automated tool. \
+    Should the data be corrupt or there is an obvious issues with the tool's output contact the \
+    script creator timothy.carambat@uniti.com or feature owner rich.thomas@uniti.com." %(time.ctime())
 
 if len(locations_csv) > 0:
     locations_csv[0].update(data='locations.csv')
     print("Locations CSV Updated with ID: %s" % (locations_csv[0].id))
     csv_item = locations_csv[0]
+    csv_item.update(item_properties={'description': description})
 else:
     item_prop = {
      'title':data_name,
-     'description': "Source CSV File For CPE Locations Feature Layer. Updated: %s" %(time.ctime())
+     'description': description
      }
     gis.content.add(item_properties=item_prop, data='locations.csv')
     while True:
@@ -62,13 +70,7 @@ if len(gis.content.search(data_name,'Feature Layer')) == 0:
         'locationType': 'coordinates',
         'latitudeFieldName': 'latitude_loc',
         'longitudeFieldName': 'longitude_loc',
-        'description': "Locations with or without CPEs. Exported from Salesforce. If the Location does not have a CPE, \
-            the Location will still be included and the CPE fields will be blank. \
-            If there are multiple CPEs at a location, that location will appear for each CPE. \
-            Excludes 'Virtual' LOCs and CPEs. \
-            This Service was updated on %s by an automated tool. \
-            Should the data be corrupt or there is an obvious issues with the tool's output contact the \
-            script creator timothy.carambat@uniti.com or feature owner rich.thomas@uniti.com." %(time.ctime()),
+        'description': description,
     }
     )
 
@@ -88,9 +90,6 @@ else:
     print("Location Data Truncated...")
 
     FeatureLayerCollection.fromitem(locations_new_fl).manager.overwrite('locations.csv')
-
-
-
 
 locations_new_fl.share(everyone=False, org=True, groups=['CPE'], allow_members_to_edit=False)
 print("New Location Layer Shared with CPE Group")
