@@ -94,6 +94,9 @@ else:
 locations_new_fl.share(everyone=False, org=True, groups=['CPE'], allow_members_to_edit=False)
 print("New Location Layer Shared with CPE Group")
 
+locations_new_fl.update(thumbnail=r'thumbnail.jpg')
+print("Thumbnail Set")
+
 print("Item Sucessfully Published!")
 os.remove("locations.csv")
 print("CSV removed")
