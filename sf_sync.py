@@ -11,6 +11,7 @@ load_dotenv(find_dotenv()) #get by os.environ.get("VALUE")
 from load_locations import load_locations
 from load_cpe_locations import load_cpe_locations
 from create_datafile import create_datafile
+from enable_exports import enable_exports
 
 # establish connection objects to SF and to DB
 sf = Salesforce(username=os.environ.get("SF_USERNAME"), password=os.environ.get("SF_PASSWORD"), security_token=os.environ.get("SF_TOKEN"))
@@ -100,3 +101,5 @@ print("Thumbnail Set")
 print("Item Sucessfully Published!")
 os.remove("locations.csv")
 print("CSV removed")
+
+enable_exports(os, time, locations_new_fl.id)
