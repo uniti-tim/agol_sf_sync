@@ -26,11 +26,11 @@ gis = GIS(os.environ.get("AGOL_SERVICE_URL"),os.environ.get("AGOL_USER"), os.env
 # Get and Push into Truncated Tables - totally replaces all data in both locations and cpe_locations table
 load_locations(sf,conn,cur)
 load_cpe_locations(sf,conn,cur)
-# should a function be here that cleansup the NULL Lat/lngs after loading?
 
 create_datafile(conn,cur)
 
 
+# Establish Properties of the Object to be uploaded
 data_name = 'Uniti_Salesforce_Locations'
 locations_csv = gis.content.search(data_name,'CSV')
 description = "Locations with or without CPEs. Exported from Salesforce. If the Location does not have a CPE, \
@@ -41,6 +41,7 @@ description = "Locations with or without CPEs. Exported from Salesforce. If the 
     Should the data be corrupt or there is an obvious issues with the tool's output contact the \
     script creator timothy.carambat@uniti.com or feature owner rich.thomas@uniti.com." %(time.ctime())
 
+# Update or Create Gallery Item on AGOL
 if len(locations_csv) > 0:
     locations_csv[0].update(data='locations.csv')
     print("Locations CSV Updated with ID: %s" % (locations_csv[0].id))
@@ -60,7 +61,7 @@ else:
     print("Location CSV Uploaded With ID: %s" % (csv_item.id) )
 
 
-
+# Update or Create CSV as FeatureLayer
 if len(gis.content.search(data_name,'Feature Layer')) == 0:
     csv_item.publish(
     overwrite=True,
@@ -92,9 +93,11 @@ else:
 
     FeatureLayerCollection.fromitem(locations_new_fl).manager.overwrite('locations.csv')
 
+# Share FeatureLayer with Org
 locations_new_fl.share(everyone=False, org=True, groups=['CPE'], allow_members_to_edit=False)
 print("New Location Layer Shared with CPE Group")
 
+#Set Thumbnail of FeatureLayer
 locations_new_fl.update(thumbnail=r'thumbnail.jpg')
 print("Thumbnail Set")
 
@@ -102,4 +105,5 @@ print("Item Sucessfully Published!")
 os.remove("locations.csv")
 print("CSV removed")
 
+# Set Exports to True. Need to use Selenim because there is no API endpoint for this!
 enable_exports(os, time, locations_new_fl.id)

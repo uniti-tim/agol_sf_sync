@@ -8,6 +8,7 @@ To set this up you will need the following:
 To assign credentials touch & edit the `.env` file.
 
 Setup Posgresql DB to use for synchronization of the data to be stored. This is done to optimize speed and minimize calls to SF.
+Can setup table by `python create_tables.py`
 
 To Run this script you must have the following packages installed on your `PYTHON 2.7 || 3` instance.
 
